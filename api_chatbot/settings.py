@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-q)69exi2v=7=2l&+7g3by)t7w)da90j88k&k6(t%8a@y&f)ymv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'api-chatbot-liiffe.up.railway.app',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
