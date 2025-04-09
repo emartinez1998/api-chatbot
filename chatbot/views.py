@@ -10,24 +10,27 @@ def chatbotGet(request):
     data = {"definicion": "Liiffe es una plataforma de viajes que ofrece itinerarios detallados de 3 días diseñados por lugareños para una experiencia auténtica."}
     return Response(data, status=200)  # Se devuelve JSON con código 200 OK
 
-
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([HasAPIKey])
 def chatbotGuides(request):
-    external_url = "https://liiffe.com/chatbot_rest.getGuias"  # Cambia esto por tu URL real
-    params = {
-        'pagina': request.data.get('pagina', '1')
-    }
+    external_url = "https://liiffe.com/chatbot_rest.getGuias"  # URL real del endpoint externo
+
+    # Obtener parámetros desde la URL, por ejemplo: ?pagina=2
+    pagina = request.query_params.get('pagina', '1')  # valor por defecto '1'
+    params = {'pagina': pagina}
 
     try:
         external_response = requests.get(external_url, params=params)
-        external_response.raise_for_status()  # Lanza excepción si hubo error
+        external_response.raise_for_status()
 
         data = external_response.json()
         return Response(data, status=200)
 
     except requests.RequestException as e:
-        return Response({'error': 'Error al consultar el endpoint externo', 'detalle': str(e)}, status=500)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
 
 
 @api_view(['POST'])
