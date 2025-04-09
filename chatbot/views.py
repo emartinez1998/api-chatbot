@@ -11,7 +11,7 @@ def chatbotGet(request):
     return Response(data, status=200)  # Se devuelve JSON con código 200 OK
 
 @api_view(['GET'])
-@permission_classes([HasAPIKey])
+@permission_classes([AllowAny]) 
 def chatbotGuides(request):
     external_url = "https://liiffe.com/chatbot_rest.getGuias"  # URL real del endpoint externo
 
