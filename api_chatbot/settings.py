@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,8 +140,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #    ]
 #}
 
-MY_API_KEY = "54543klhsdjkfhuirt3u5234890240928olgu5784"
-
+APP_API_KEY = config('APP_API_KEY')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

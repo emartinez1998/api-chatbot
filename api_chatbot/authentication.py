@@ -11,7 +11,7 @@ class APIKeyAuthentication(BaseAuthentication):
         if not api_key:
             return None  # Sin encabezado, pasa al siguiente autenticador o da 401 si no hay otro
 
-        if api_key != settings.MY_API_KEY:
+        if api_key != settings.APP_API_KEY:
             raise AuthenticationFailed('API Key inválida')
 
         return (None, None)  # Retorna un user anónimo o puedes retornar un usuario real
