@@ -2,6 +2,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import AllowAny 
+from api_chatbot.authentication import APIKeyAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import requests
 
 @api_view(['GET'])
@@ -50,3 +52,10 @@ def chatbotPost(request):
 def chatbotGetPublic(request):
     data = {"definicion": "Liiffe es una plataforma de viajes que ofrece itinerarios detallados de 3 días diseñados por lugareños para una experiencia auténtica."}
     return Response(data, status=200)  # Se devuelve JSON con código 200 OK
+
+
+@api_view(['GET'])
+@authentication_classes([APIKeyAuthentication])
+@permission_classes([AllowAny]) 
+def pruebaApi(request):
+    return Response({'mensaje': 'Autenticación correcta'})
