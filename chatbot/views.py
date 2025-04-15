@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from api_chatbot.authentication import APIKeyAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import requests
+from django.core.exceptions import ValidationError
 
 @api_view(['GET'])
 @permission_classes([HasAPIKey])
@@ -54,8 +55,37 @@ def chatbotGetPublic(request):
     return Response(data, status=200)  # Se devuelve JSON con código 200 OK
 
 
+
+
 @api_view(['GET'])
 @authentication_classes([APIKeyAuthentication])
 @permission_classes([AllowAny]) 
 def pruebaApi(request):
     return Response({'mensaje': 'Autenticación correcta'})
+
+
+
+@api_view(['GET'])
+@authentication_classes([])  # Si quieres usar APIKeyAuthentication, déjala aquí
+@permission_classes([AllowAny]) 
+def validateUser(request):
+    email = request.GET.get('email')
+
+    if not email:
+        return Response({'error': 'The field "email" is empty'}, status=400)
+
+    try:
+        if validate_email(email)=='true':        
+            return Response({'valid': 'true', 'first_name': 'Enrique'})
+        else:
+            return Response({'valid': 'false', 'first_name': 'null'})
+    except ValidationError:
+        return Response({'error': 'Email no válido'}, status=400)
+
+
+
+def validate_email(email):
+    if email=='enrique@gmail.com':
+        return 'true'
+    else:
+        return 'false'
