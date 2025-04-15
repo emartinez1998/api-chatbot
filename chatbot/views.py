@@ -76,9 +76,9 @@ def validateUser(request):
 
     try:
         if validate_email(email)=='true':        
-            return Response({'valid': 'true', 'first_name': 'Enrique'})
+            return Response({'mensaje': 'Valid email address', 'valid': 'true', 'first_name': 'Enrique'})
         else:
-            return Response({'valid': 'false', 'first_name': 'null'})
+            return Response({'mensaje': 'Invalid email', 'valid': 'false', 'first_name': 'null'})
     except ValidationError:
         return Response({'error': 'Email no válido'}, status=400)
 
