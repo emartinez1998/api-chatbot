@@ -4,18 +4,20 @@ from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import AllowAny 
 from api_chatbot.authentication import APIKeyAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
 import requests
 from django.core.exceptions import ValidationError
 import time
 
+
 @api_view(['GET'])
-@permission_classes([HasAPIKey])
+@permission_classes([IsAuthenticated])
 def chatbotGet(request):
     data = {"definicion": "Liiffe es una plataforma de viajes que ofrece itinerarios detallados de 3 días diseñados por lugareños para una experiencia auténtica."}
     return Response(data, status=200)  # Se devuelve JSON con código 200 OK
 
 @api_view(['GET'])
-@permission_classes([AllowAny]) 
+@permission_classes([IsAuthenticated])
 def chatbotGuides(request):
     external_url = "https://liiffe.com/chatbot_rest.getGuias"  # URL real del endpoint externo
 
@@ -38,7 +40,7 @@ def chatbotGuides(request):
 
 
 @api_view(['POST'])
-@permission_classes([HasAPIKey])
+@permission_classes([IsAuthenticated])
 def chatbotPost(request):
     dato = request.data.get('dato')  # Obtiene el valor de 'dato' del request
     if not dato:
@@ -64,16 +66,14 @@ def chatbotGetPublic(request):
 
 
 @api_view(['GET'])
-@authentication_classes([APIKeyAuthentication])
-@permission_classes([AllowAny]) 
+@permission_classes([IsAuthenticated])
 def pruebaApi(request):
     return Response({'mensaje': 'Autenticación correcta'})
 
 
 
 @api_view(['GET'])
-@authentication_classes([])  # Si quieres usar APIKeyAuthentication, déjala aquí
-@permission_classes([AllowAny]) 
+@permission_classes([IsAuthenticated])
 def validateUser(request):
     email = request.GET.get('email')
 

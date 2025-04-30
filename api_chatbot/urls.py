@@ -4,11 +4,15 @@ from django.http import JsonResponse
 from django.contrib import admin
 from django.urls import path, include
 
-def health_check(request):
-    return JsonResponse({"status": "ok", "message": "API Chatbot Liiffe funcionando"})
+from django.urls import path
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
-urlpatterns = [        
-    path('', health_check),  # <- nueva vista para "/"
-    path('api/', include('chatbot.urls')),   
+
+urlpatterns = [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  
     path('admin/', admin.site.urls),
 ]
