@@ -6,7 +6,7 @@ from api_chatbot.authentication import APIKeyAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 import requests
 from django.core.exceptions import ValidationError
-
+import time
 
 @api_view(['GET'])
 @permission_classes([HasAPIKey])
@@ -52,6 +52,7 @@ def chatbotPost(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def chatbotGetPublic(request):
+    time.sleep(4)  # Espera 4 segundos
     return Response({
         "status": "success",
         "data": {
