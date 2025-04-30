@@ -1,8 +1,6 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import AllowAny 
-from api_chatbot.authentication import APIKeyAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 import requests
