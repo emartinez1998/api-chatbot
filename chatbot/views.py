@@ -7,6 +7,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 import requests
 from django.core.exceptions import ValidationError
 
+
 @api_view(['GET'])
 @permission_classes([HasAPIKey])
 def chatbotGet(request):
@@ -49,10 +50,14 @@ def chatbotPost(request):
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny])  # Permiso para acceso público
+@permission_classes([AllowAny])
 def chatbotGetPublic(request):
-    data = {"definicion": "Liiffe es una plataforma de viajes que ofrece itinerarios detallados de 3 días diseñados por lugareños para una experiencia auténtica."}
-    return Response(data, status=200)  # Se devuelve JSON con código 200 OK
+    return Response({
+        "status": "success",
+        "data": {
+            "definicion": "Liiffe es una plataforma de viajes que ofrece itinerarios detallados de 3 días diseñados por lugareños para una experiencia auténtica."
+        }
+    }, status=200)
 
 
 
