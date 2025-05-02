@@ -51,8 +51,7 @@ def chatbotPost(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def chatbotGetPublic(request):
-    time.sleep(4)  # Espera 4 segundos
+def chatbotGetPublic(request):    
     return Response({
         "status": "success",
         "data": {
@@ -70,21 +69,24 @@ def pruebaApi(request):
 
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def validateUser(request):
-    email = request.GET.get('email')
+    email = request.data.get('email')  # Cambiado a .data para POST
 
     if not email:
         return Response({'error': 'The field "email" is empty'}, status=400)
 
     try:
-        if validate_email(email)=='true':        
-            return Response({'mensaje': 'Valid email address', 'valid': 'true', 'first_name': 'Enrique'})
+        if validate_email(email) == 'true':
+            return Response({'message': 'Valid email address', 'valid': 'true', 'first_name': 'Enrique'})
         else:
-            return Response({'mensaje': 'Invalid email', 'valid': 'false', 'first_name': 'null'})
+            return Response({'message': 'Invalid email', 'valid': 'false', 'first_name': 'null'})
     except ValidationError:
         return Response({'error': 'Email no válido'}, status=400)
+    
+    
+
 
 
 
