@@ -68,7 +68,15 @@ def pruebaApi(request):
     return Response({'mensaje': 'Autenticación correcta'})
 
 
-
+def validate_email(email):
+    if email=='enrique@gmail.com':
+        return 'true'
+    else:
+        return 'false'
+    
+    
+    
+## -----------  1. VALIDA CORREO -----------
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def validateUser(request):
@@ -83,15 +91,30 @@ def validateUser(request):
         else:
             return Response({'message': 'Invalid email', 'valid': 'false', 'first_name': 'null'})
     except ValidationError:
-        return Response({'error': 'Email no válido'}, status=400)
-    
-    
+        return Response({'error': 'Invalid email'}, status=400)
 
 
 
-
-def validate_email(email):
-    if email=='enrique@gmail.com':
+## -----------  1. VALIDA NUMERO DE RESERVA -----------
+def validate_reservation_number(reservation_number):
+    if reservation_number==323235443534:
         return 'true'
     else:
         return 'false'
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def validateReservation(request):
+    reservation_number = request.data.get('reservation_number')  # Cambiado a .data para POST
+
+    if not reservation_number:
+        return Response({'error': 'The field "reservation_number" is empty'}, status=400)
+
+    try:
+        if validate_reservation_number(reservation_number) == 'true':
+            return Response({'message': 'Valid reservation number', 'valid': 'true'})
+        else:
+            return Response({'message': 'Invalid reservation number', 'valid': 'false'})
+    except ValidationError:
+        return Response({'error': 'Invalid reservation number'}, status=400)
