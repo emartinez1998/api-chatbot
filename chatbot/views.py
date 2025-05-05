@@ -278,3 +278,21 @@ def updateItinerary(request):
     # Aquí puedes insertar tu lógica de actualización real del itinerario
 
     return Response({'status':'OK', 'message': 'Itinerary successfully updated'}, status=200)
+
+
+
+## -----------  *. CONSULTAR POLITICA DE CANCELACION  -----------  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getCancellationPolicy(request):
+    id_reservation = request.data.get('id_reservation')     
+
+    if not (id_reservation):
+        return Response(
+            {'status': 'ERROR', 'message': 'All fields are required: id_reservation'},
+            status=400
+        )
+
+    # Aquí puedes insertar tu lógica de actualización real del itinerario
+
+    return Response({'status':'OK', 'message': 'Itinerary successfully updated', 'cancellation_policy':'Las cancelaciones deben realizarse con al menos 24 horas de antelación a la fecha programada del servicio para recibir un reembolso completo. Cancelaciones realizadas con menos de 24 horas de aviso o en caso de no presentarse, no serán reembolsadas. Esta política busca garantizar una adecuada planificación y respeto por el tiempo de nuestros guías.'}, status=200)
