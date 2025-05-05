@@ -10,8 +10,8 @@ urlpatterns = [
     path('chatbot/prueba/', pruebaApi, name='chatbot-prueba'),  # Endpoint POST
     path('chatbot/validate-user/', validateUser, name='validate-user'),  # Endpoint POST
     path('chatbot/validate-reservation/', validateReservation, name='validate-reservation'),  # Endpoint POST
-    path('chatbot/get-suitable-places/', getSuitablePlaces, name='get-suitable-places'),  # Endpoint POST
-    path('chatbot/get-availability-places/', getAvailabilityPlaces, name='get-availability-places'),  # Endpoint POST
+    path('chatbot/get-suitable-places/', getSuitablePlaces, name='get-suitable-places'),  # Endpoint GET
+    path('chatbot/get-availability-places/', getAvailabilityPlaces, name='get-availability-places'),  # Endpoint GET
     path('chatbot/put-itinerary-user/', updateItinerary, name='put-itinerary-user'),  # Endpoint POST
 ]
 
