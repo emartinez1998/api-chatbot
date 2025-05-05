@@ -95,7 +95,7 @@ def validateUser(request):
 
 
 
-## -----------  1. VALIDA NUMERO DE RESERVA -----------
+## -----------  *. VALIDA NUMERO DE RESERVA -----------
 def validate_reservation_number(reservation_number):
     if reservation_number==323235443534:
         return 'true'
@@ -119,6 +119,24 @@ def validateReservation(request):
     except ValidationError:
         return Response({'error': 'Invalid reservation number'}, status=400)
     
+    
+    
+
+## -----------  *. VALIDA LUGAR DE ITENARIO A MODIFICAR  -----------  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def validateItineraryPlace(request):
+    
+    reservation_number = request.data.get('reservation_number') 
+    place_description = request.data.get('place_description') 
+
+    if not (reservation_number and place_description):        
+        return Response({'status':'ERROR', 'message': 'All fields are required: reservation_number, place_description', 'id_place': 'null' }, status=400)
+    else:
+        return Response({'status':'OK', 'message': 'Place found', 'id_place':23489}, status=200)
+
+
+
     
     
 ## -----------  *. OBTIENE LUGARES ADECUADOS  -----------   
