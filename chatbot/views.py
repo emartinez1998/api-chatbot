@@ -76,7 +76,7 @@ def validate_email(email):
     
     
     
-## -----------  1. VALIDA CORREO -----------
+## -----------  *. VALIDA CORREO -----------
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def validateUser(request):
@@ -246,6 +246,12 @@ def get_availability_places():
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getAvailabilityPlaces(request):  
+
+    id_place = request.data.get('id_place')   
+
+    if not (id_place):        
+        return Response({'status': 'ERROR', 'message': 'All fields are required: id_place'}, status=400) 
+
     try:        
         places = get_availability_places()        
         return Response(places, status=200)
