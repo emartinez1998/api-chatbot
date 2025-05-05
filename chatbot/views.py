@@ -243,7 +243,7 @@ def get_availability_places():
     
 
  
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def getAvailabilityPlaces(request):  
 
