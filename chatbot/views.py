@@ -126,14 +126,18 @@ def validateReservation(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def validateItineraryPlace(request):
-    
     reservation_number = request.data.get('reservation_number') 
     place_description = request.data.get('place_description') 
 
     if not (reservation_number and place_description):        
-        return Response({'status':'ERROR', 'message': 'All fields are required: reservation_number, place_description', 'id_place': 'null' }, status=400)
-    else:
-        return Response({'status':'OK', 'message': 'Place found', 'id_place':23489}, status=200)
+        return Response({'status': 'ERROR', 'message': 'All fields are required: reservation_number, place_description', 'id_place': 'null'}, status=400)
+    
+    if place_description.casefold() == 'diurnothe retiro park'.casefold():
+        return Response({'status': 'OK', 'message': 'Place found', 'id_place': 23489 }, status=200)
+
+    # Este return faltaba
+    return Response({ 'status': 'ERROR', 'message': 'Place not found', 'id_place': 'null'}, status=404)
+
 
 
 
