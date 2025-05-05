@@ -144,9 +144,9 @@ def validateItineraryPlace(request):
     
     
 ## -----------  *. OBTIENE LUGARES ADECUADOS  -----------   
-def get_suitiable_places(conditions):
-    
-    if conditions == 'boring':
+def get_suitiable_places(conditions, id_place):
+        
+    if conditions.casefold() == 'boring'.casefold():
         places = {
             "places_found": "true",
             "suitiable_places":[
@@ -198,13 +198,14 @@ def get_suitiable_places(conditions):
 @permission_classes([IsAuthenticated])
 def getSuitablePlaces(request):
     
+    id_place = request.data.get('id_place')
     conditions = request.data.get('conditions')  # Cambiado a .data para POST
 
     if not conditions:
         return Response({'error': 'The field "conditions" is empty'}, status=400)
 
     try:        
-        places = get_suitiable_places(conditions=conditions)                
+        places = get_suitiable_places(conditions=conditions, id_place=id_place)                
         return Response(places, status=200)
     except ValidationError:
         return Response({'error': 'Invalid reservation number'}, status=400)
