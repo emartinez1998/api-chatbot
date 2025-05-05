@@ -118,3 +118,134 @@ def validateReservation(request):
             return Response({'message': 'Invalid reservation number', 'valid': 'false'})
     except ValidationError:
         return Response({'error': 'Invalid reservation number'}, status=400)
+    
+    
+    
+## -----------  *. OBTIENE LUGARES ADECUADOS  -----------   
+def get_suitiable_places(conditions):
+    
+    if conditions == 'boring':
+        places = {
+            "places_found": "true",
+            "suitiable_places":[
+                {
+                    "id_place":1,
+                    "title":"COMMERCIAL COFFEE",
+                    "description":"This cozy café is the perfect spot for those who appreciate a great cup of coffee in a relaxed, modern setting. With a carefully curated selection of beans and expert preparation, every sip here is an experience. "
+                },
+                {
+                    "id_place":2,
+                    "title":"FARADAY",
+                    "description":"Store located in the Plaza del Cordon, in the heart of Madrid, selling a selection of sweets made in convents and monasteries in Spain.  "
+                },
+                {
+                    "id_place":3,
+                    "title":"SAN GINÉS",
+                    "description":"Great location near Plaza Mayor. You can choose from a mix of churros and porras."
+                }
+            ]
+        }
+    else:
+        places = {
+            "places_found": "false",
+            "suitiable_places":[
+                {
+                    "id_place":"null",
+                    "title":"null",
+                    "description":"null"
+                },
+                {
+                    "id_place":"null",
+                    "title":"null",
+                    "description":"null"
+                },
+                {
+                    "id_place":"null",
+                    "title":"null",
+                    "description":"null"
+                }
+            ]
+        }
+        
+    return places
+    
+    
+
+ 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getSuitablePlaces(request):
+    
+    conditions = request.data.get('conditions')  # Cambiado a .data para POST
+
+    if not conditions:
+        return Response({'error': 'The field "conditions" is empty'}, status=400)
+
+    try:        
+        places = get_suitiable_places(conditions=conditions)                
+        return Response(places, status=200)
+    except ValidationError:
+        return Response({'error': 'Invalid reservation number'}, status=400)
+    
+    
+    
+
+## -----------  *. OBTIENE LUGARES ABIERTOS O DISPONIBLES  -----------   
+def get_availability_places():
+    
+    places = {
+        "places_found": "true",
+        "availability_places":[
+            {
+                "id_place":1,
+                "title":"CASA BOTIN",
+                "description":"This historic spot is much more than just a restaurant; it's a true culinary institution with centuries of tradition. Known for its classic ambiance and unparalleled legacy "
+            },
+            {
+                "id_place":2,
+                "title":"LHARDY",
+                "description":"Emblematic and historical place of a must-see in Madrid.  "
+            },
+            {
+                "id_place":3,
+                "title":"PRADO MUSEUM",
+                "description":"This is one of the most outstanding museums in the world, and is also among the most visited. "
+            }
+        ]
+    }
+
+        
+    return places
+    
+    
+
+ 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getAvailabilityPlaces(request):  
+    try:        
+        places = get_availability_places()        
+        return Response(places, status=200)
+    except ValidationError:
+        return Response({'error': 'Invalid reservation number'}, status=400)
+    
+    
+
+
+## -----------  *. ACTUALIZAR ITINERARIO  -----------  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateItinerary(request):
+    id_reservation = request.data.get('id_reservation') 
+    id_previous_place = request.data.get('id_previous_place')  
+    id_new_place = request.data.get('id_new_place')  
+
+    if not (id_reservation and id_previous_place and id_new_place):
+        return Response(
+            {'error': 'All fields are required: id_reservation, id_previous_place, id_new_place'},
+            status=400
+        )
+
+    # Aquí puedes insertar tu lógica de actualización real del itinerario
+
+    return Response({'status':'OK', 'message': 'Itinerary successfully updated'}, status=200)
