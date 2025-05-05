@@ -172,7 +172,7 @@ def get_suitiable_places(conditions):
     
 
  
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def getSuitablePlaces(request):
     
