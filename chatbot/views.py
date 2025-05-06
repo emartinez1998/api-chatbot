@@ -69,7 +69,7 @@ def pruebaApi(request):
 
 
 def validate_email(email):
-    if email=='enrique@gmail.comenrique@gmail.com':
+    if email=='enrique@gmail.com':
         return 'true'
     else:
         return 'false'
