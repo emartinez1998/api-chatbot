@@ -343,3 +343,24 @@ def getAvailableDates(request):
         return Response(dates, status=200)
     except ValidationError:
         return Response({'error': 'Invalid reservation number'}, status=400)
+    
+    
+
+
+## -----------  *. CONSULTAR POLITICA DE CANCELACION  -----------  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateReservationDate(request):
+    
+    id_reservation = request.data.get('id_reservation')    
+    date =  request.data.get('date')
+
+    if not (id_reservation and date):
+        return Response(
+            {'error': 'All fields are required: id_reservation, date'},
+            status=400
+        )
+
+    # Aquí puedes insertar tu lógica de actualización real del itinerario
+
+    return Response({'status':'OK', 'message': 'Reservation date successfully updated'}, status=200)
