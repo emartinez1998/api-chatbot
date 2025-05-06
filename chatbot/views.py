@@ -304,14 +304,14 @@ def getCancellationPolicy(request):
 ## -----------  *. OBTIENE FECHAS DISPONIBLES  -----------   
 def get_available_dates(id_reservation):
         
-    if not (id_reservation):
+    if id_reservation!='':
         available_dates = {
             "available_dates_guide": "true",
             "dates":[
                 {
                     "date_1": "06-12-2025 12:00:00",
-                    "date_2": "06-12-2025 12:00:00",
-                    "date_3": "06-12-2025 12:00:00",
+                    "date_2": "06-13-2025 11:00:00",
+                    "date_3": "06-14-2025 15:00:00",
                 }
             ]
         }
