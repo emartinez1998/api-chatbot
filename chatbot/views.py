@@ -69,7 +69,7 @@ def pruebaApi(request):
 
 
 def validate_email(email):
-    if email=='enrique@gmail.com':
+    if email=='enrique@gmail.comenrique@gmail.com':
         return 'true'
     else:
         return 'false'
@@ -97,7 +97,7 @@ def validateUser(request):
 
 ## -----------  *. VALIDA NUMERO DE RESERVA -----------
 def validate_reservation_number(reservation_number):
-    if reservation_number==323235443534:
+    if reservation_number=='323235443534':
         return 'true'
     else:
         return 'false'
