@@ -296,3 +296,50 @@ def getCancellationPolicy(request):
     # Aquí puedes insertar tu lógica de actualización real del itinerario
 
     return Response({'status':'OK', 'message': 'Itinerary successfully updated', 'cancellation_policy':'Las cancelaciones deben realizarse con al menos 24 horas de antelación a la fecha programada del servicio para recibir un reembolso completo. Cancelaciones realizadas con menos de 24 horas de aviso o en caso de no presentarse, no serán reembolsadas. Esta política busca garantizar una adecuada planificación y respeto por el tiempo de nuestros guías.'}, status=200)
+
+
+
+
+
+## -----------  *. OBTIENE FECHAS DISPONIBLES  -----------   
+def get_available_dates(id_reservation):
+        
+    if not (id_reservation):
+        available_dates = {
+            "available_dates_guide": "true",
+            "dates":[
+                {
+                    "date_1": "06-12-2025 12:00:00",
+                    "date_2": "06-12-2025 12:00:00",
+                    "date_3": "06-12-2025 12:00:00",
+                }
+            ]
+        }
+    else:
+        available_dates = {
+            "available_dates_guide": "false",
+            "dates":[
+                {
+                    "date_1": "null",
+                    "date_2": "null",
+                    "date_3": "null",
+                }
+            ]
+        }
+        
+    return available_dates
+    
+    
+
+ 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def getAvailableDates(request):
+    
+    id_reservation = request.data.get('id_reservation') 
+
+    try:        
+        dates = get_available_dates(id_reservation)                
+        return Response(dates, status=200)
+    except ValidationError:
+        return Response({'error': 'Invalid reservation number'}, status=400)
