@@ -261,10 +261,29 @@ def getAvailabilityPlaces(request):
     
 
 
-## -----------  *. ACTUALIZAR ITINERARIO  -----------  
+## -----------  *. ACTUALIZAR ITINERARIO - LUGARES ADECUADOS  -----------  
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def updateItinerary(request):
+def updateItinerarySuitable(request):
+    id_reservation = request.data.get('id_reservation') 
+    id_previous_place = request.data.get('id_previous_place')  
+    id_new_place = request.data.get('id_new_place')  
+
+    if not (id_reservation and id_previous_place and id_new_place):
+        return Response(
+            {'error': 'All fields are required: id_reservation, id_previous_place, id_new_place'},
+            status=400
+        )
+
+    # Aquí puedes insertar tu lógica de actualización real del itinerario
+
+    return Response({'status':'OK', 'message': 'Itinerary successfully updated'}, status=200)
+
+
+## -----------  *. ACTUALIZAR ITINERARIO - LUGARES DISPONIBLES  -----------  
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def updateItineraryAvailable(request):
     id_reservation = request.data.get('id_reservation') 
     id_previous_place = request.data.get('id_previous_place')  
     id_new_place = request.data.get('id_new_place')  
