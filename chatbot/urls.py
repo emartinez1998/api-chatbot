@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import chatbotGet, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerary, validateItineraryPlace, getCancellationPolicy  # Importa las funciones de vista
+from .views import chatbotGet, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerary, validateItineraryPlace, getCancellationPolicy, getAvailableDates  # Importa las funciones de vista
 
 urlpatterns = [
     path('chatbot/get/', chatbotGet, name='chatbot-get'),  # Endpoint GET
@@ -15,5 +15,6 @@ urlpatterns = [
     path('chatbot/put-itinerary-user/', updateItinerary, name='put-itinerary-user'),  # Endpoint POST
     path('chatbot/validate-itinerary-place/', validateItineraryPlace, name='validate-itinerary-place'),  # Endpoint POST    
     path('chatbot/get-cancellation-policy/', getCancellationPolicy, name='get-cancellation-policy'),  # Endpoint POST
+    path('chatbot/get_available_dates/', getAvailableDates, name='get_available_dates'),  # Endpoint POST
 ]
 
