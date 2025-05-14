@@ -383,3 +383,42 @@ def updateReservationDate(request):
     # Aquí puedes insertar tu lógica de actualización real del itinerario
 
     return Response({'status':'OK', 'message': 'Reservation date successfully updated'}, status=200)
+
+
+
+
+
+
+
+
+
+## -----------------------------   *. LIIFFE API  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getUserByEmail(request):
+    email = request.query_params.get('email', None)
+
+    if not email:
+        return Response({'error': 'El parámetro "email" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/users/clients/find-by-email/{email}"
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
