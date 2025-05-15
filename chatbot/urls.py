@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import chatbotGet, getCiudades, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerarySuitable, updateItineraryAvailable, validateItineraryPlace, getCancellationPolicy, getAvailableDates, updateReservationDate  # Importa las funciones de vista
+from .views import updateGuide, getPlaceById, getRecommendedPlaces, getPlacesByDay, getGuideById, getDaysGuide, chatbotGet, getUserByEmail, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerarySuitable, updateItineraryAvailable, validateItineraryPlace, getCancellationPolicy, getAvailableDates, updateReservationDate  # Importa las funciones de vista
 
 urlpatterns = [
     path('chatbot/get/', chatbotGet, name='chatbot-get'),  # Endpoint GET
@@ -17,7 +17,15 @@ urlpatterns = [
     path('chatbot/validate-itinerary-place/', validateItineraryPlace, name='validate-itinerary-place'),  # Endpoint POST    
     path('chatbot/get-cancellation-policy/', getCancellationPolicy, name='get-cancellation-policy'),  # Endpoint POST
     path('chatbot/get_available_dates/', getAvailableDates, name='get_available_dates'),  # Endpoint POST
-    path('chatbot/put-reservation-date/', updateReservationDate, name='put-reservation-date'),  # Endpoint POST
-    path('chatbot/get-ciudades/', getCiudades, name='get-ciudades'),  # Endpoint POST
+    path('chatbot/put-reservation-date/', updateReservationDate, name='put-reservation-date'),  # Endpoint POST    
+    path('chatbot/put-reservation-date/', updateReservationDate, name='put-reservation-date'),    
+    
+    path('chatbot/find-by-email/', getUserByEmail, name='find-by-email'),  
+    path('chatbot/find-guide/', getGuideById, name='find-guide'),  
+    path('chatbot/get-days-guide/', getDaysGuide, name='get-days-guide'), 
+    path('chatbot/get-places-by-day/', getPlacesByDay, name='get-places-by-day'), 
+    path('chatbot/get-recommended-places/', getRecommendedPlaces, name='get-recommended-places'), 
+    path('chatbot/get-place-by-id/', getPlaceById, name='get-place-by-id'), 
+    path('chatbot/update-place-guide/', updateGuide, name='update-place-guide'), 
 ]
 

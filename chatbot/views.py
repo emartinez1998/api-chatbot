@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 import requests
 from django.core.exceptions import ValidationError
 import time
-
+import json
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -389,33 +389,249 @@ def updateReservationDate(request):
 
 
 
-## -----------  *. CONSULTAR CIUDADES  -----------  
-@api_view(['GET']) 
+
+## -----------------------------   *. LIIFFE API  -------------------------------------------
+
+## -----------------------------   *. VALIDAR USUARIO  -------------------------------------------
+@api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getCiudades(request):
-    url = "https://back-staging.liiffe.com/affiliates/affiliates/"
+def getUserByEmail(request):
+    email = request.query_params.get('email', None)
+
+    if not email:
+        return Response({'error': 'El parámetro "email" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/users/clients/find-by-email/{email}/"
 
     headers = {
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json"        
     }
 
     try:
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            return Response({
-                'status': 'OK',
-                'data': response.json()
-            }, status=200)
-        else:
-            return Response({
-                'status': 'ERROR',
-                'message': f'Error {response.status_code} al consultar el endpoint',
-                'details': response.text
-            }, status=response.status_code)
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+        
+
+## -----------------------------   *. VALIDAR GUIA  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getGuideById(request):
+    
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guides/{id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+        
+
+## -----------------------------   *. OBTENER DIAS DE UNA GUIA  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getDaysGuide(request):
+    
+    guide = request.query_params.get('guide', None)
+
+    if not guide:
+        return Response({'error': 'El parámetro "guide" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guide-days/?guide={guide}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+
+
+
+
+## -----------------------------   *. OBTENER LOS LUGARES DE UN DIA POR ID  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getPlacesByDay(request):
+    
+    guideDay = request.query_params.get('guideDay', None)
+
+    if not guideDay:
+        return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+        
+## -----------------------------   *. OBTENER SUGERENCIAS DE LUGARES DE PARA UN DIA  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getRecommendedPlaces(request):
+    
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/backup-places/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+
+
+## -----------------------------   *. OBTENER INFORMACION DE UN LUGAR POR SU ID  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getPlaceById(request):
+    
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/destinations/places/{id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        # En caso de que no haya respuesta (timeout, red, etc.)
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+        
+        
+
+## -----------------------------   *. ACTUALIZAR LUGAR DE INTERES DE UNA GUIA  -------------------------------------------
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def updateGuide(request):
+    id = request.data.get('id', None)
+    place = request.data.get('place', None)
+
+    if not id or not place:
+        return Response({'error': 'Los parámetros "id" y "place" son requeridos'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+    }
+
+    payload = {
+        "place": place
+    }
+
+    try:
+        external_response = requests.patch(external_url, headers=headers, data=json.dumps(payload))
+
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
     except requests.RequestException as e:
         return Response({
-            'status': 'ERROR',
-            'message': 'Excepción al realizar la solicitud externa',
-            'details': str(e)
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
         }, status=500)
