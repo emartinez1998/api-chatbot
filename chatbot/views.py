@@ -383,3 +383,39 @@ def updateReservationDate(request):
     # Aquí puedes insertar tu lógica de actualización real del itinerario
 
     return Response({'status':'OK', 'message': 'Reservation date successfully updated'}, status=200)
+
+
+
+
+
+
+## -----------  *. CONSULTAR CIUDADES  -----------  
+@api_view(['GET']) 
+@permission_classes([IsAuthenticated])
+def getCiudades(request):
+    url = "https://back-staging.liiffe.com/affiliates/affiliates/"
+
+    headers = {
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return Response({
+                'status': 'OK',
+                'data': response.json()
+            }, status=200)
+        else:
+            return Response({
+                'status': 'ERROR',
+                'message': f'Error {response.status_code} al consultar el endpoint',
+                'details': response.text
+            }, status=response.status_code)
+    except requests.RequestException as e:
+        return Response({
+            'status': 'ERROR',
+            'message': 'Excepción al realizar la solicitud externa',
+            'details': str(e)
+        }, status=500)
