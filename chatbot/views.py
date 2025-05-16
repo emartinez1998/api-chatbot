@@ -635,3 +635,40 @@ def updateGuide(request):
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
         }, status=500)
+    
+
+
+
+
+## -----------------------------   *. OBTENER DATOS DE MULTIPLES LUGARES  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getDataPlaces(request):
+    
+    ids = request.query_params.getlist('id')
+
+    if not ids:
+        return Response({'error': 'Debe proporcionar al menos un parámetro "id"'}, status=400)
+
+    # Construir la URL con múltiples ids
+    params = '&'.join([f'id={i}' for i in ids])
+    external_url = f"https://back-staging.liiffe.com/api/destinations/places/?{params}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
