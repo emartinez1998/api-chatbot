@@ -7,6 +7,8 @@ import requests
 from django.core.exceptions import ValidationError
 import time
 import json
+from difflib import SequenceMatcher
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -636,3 +638,97 @@ def updateGuide(request):
             'detalle': str(e)
         }, status=500)
 
+
+
+## -----------------------------   *. OBTENER DATOS DE MULTIPLES LUGARES  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getDataPlaces(request):
+    
+    ids = request.query_params.getlist('id')
+
+    if not ids:
+        return Response({'error': 'Debe proporcionar al menos un parámetro "id"'}, status=400)
+
+    # Construir la URL con múltiples ids
+    params = '&'.join([f'id={i}' for i in ids])
+    external_url = f"https://back-staging.liiffe.com/api/destinations/places/?{params}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+
+        return Response(
+            data=external_response.json(),
+            status=external_response.status_code
+        )
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
+        
+
+
+## -----------------------------   *. OBTENER DATOS DE MULTIPLES LUGARES  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getSearchPlaceDay(request):
+    
+    guideDay = request.query_params.get('guideDay', None)
+    name = request.query_params.get('name', None)
+
+    if not guideDay:
+        return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
+
+    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
+
+        if name:
+            name = name.strip().lower()
+            best_match = None
+            highest_ratio = 0.0
+
+            # 1. Buscar coincidencia por substring exacta (prioridad)
+            for item in data:
+                place_name = item.get("placeData", {}).get("name", "").strip().lower()
+                if name in place_name:
+                    return Response(item, status=200)
+
+            # 2. Si no hay coincidencia directa, usar similitud
+            for item in data:
+                place_name = item.get("placeData", {}).get("name", "").strip().lower()
+                ratio = SequenceMatcher(None, name, place_name).ratio()
+                if ratio > highest_ratio:
+                    highest_ratio = ratio
+                    best_match = item
+
+            if best_match and highest_ratio > 0.3:
+                return Response(best_match, status=200)
+            else:
+                return Response(
+                    {'error': f'No se encontró ninguna coincidencia razonable para el nombre "{name}"'},
+                    status=404
+                )
+
+        return Response(data, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
