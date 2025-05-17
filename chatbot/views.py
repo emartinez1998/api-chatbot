@@ -466,7 +466,6 @@ def getGuideById(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getDaysGuide(request):
-    
     guide = request.query_params.get('guide', None)
 
     if not guide:
@@ -476,25 +475,45 @@ def getDaysGuide(request):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
     }
 
     try:
         external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
 
-        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
-        return Response(
-            data=external_response.json(),
-            status=external_response.status_code
-        )
+        # Si hay menos de 5, completar con objetos por defecto
+        while len(data) < 5:
+            data.append({
+                "id": 0,
+                "translations": {
+                    "es": {
+                        "title": "",
+                        "content": ""
+                    },
+                    "en": {
+                        "title": "",
+                        "content": ""
+                    }
+                },
+                "createdAt": None,
+                "updatedAt": None,
+                "dayNumber": None,
+                "isActive": False,
+                "image": None,
+                "guide": int(guide) if guide.isdigit() else None
+            })
+
+        # Si hay más de 5, truncar (opcional, pero por si acaso)
+        data = data[:5]
+
+        return Response(data=data, status=external_response.status_code)
 
     except requests.RequestException as e:
-        # En caso de que no haya respuesta (timeout, red, etc.)
         return Response({
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
         }, status=500)
-
 
 
 
