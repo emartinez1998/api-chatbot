@@ -751,3 +751,17 @@ def getSearchPlaceDay(request):
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
         }, status=500)
+        
+        
+
+
+## -----------------------------   *. SETEA UN DATO PARA TIDIO  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def setDato(request):
+    dato = request.query_params.get('dato', None)
+    
+    if not dato:
+        return Response({'error': 'El parámetro "dato" es requerido'}, status=400)
+
+    return Response({'dato': dato}, status=200)
