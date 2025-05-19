@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import setDato, getSearchPlaceDay, getDataPlaces, updateGuide, getPlaceById, getRecommendedPlaces, getPlacesByDay, getGuideById, getDaysGuide, chatbotGet, getUserByEmail, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerarySuitable, updateItineraryAvailable, validateItineraryPlace, getCancellationPolicy, getAvailableDates, updateReservationDate  # Importa las funciones de vista
+from .views import getSchedules, setDato, getSearchPlaceDay, getDataPlaces, updateGuide, getPlaceById, getRecommendedPlaces, getPlacesByDay, getGuideById, getDaysGuide, chatbotGet, getUserByEmail, chatbotPost, chatbotGetPublic, chatbotGuides, pruebaApi, validateUser, validateReservation, getSuitablePlaces, getAvailabilityPlaces, updateItinerarySuitable, updateItineraryAvailable, validateItineraryPlace, getCancellationPolicy, getAvailableDates, updateReservationDate  # Importa las funciones de vista
 
 urlpatterns = [
     path('chatbot/get/', chatbotGet, name='chatbot-get'),  # Endpoint GET
@@ -30,5 +30,6 @@ urlpatterns = [
     path('chatbot/get-data-places/', getDataPlaces, name='get-data-places'), 
     path('chatbot/get-search-place-day/', getSearchPlaceDay, name='get-search-place-day'), 
     path('chatbot/set-dato/', setDato, name='set-dato'), 
+    path('chatbot/get-schedules/', getSchedules, name='get-schedules'), 
 ]
 

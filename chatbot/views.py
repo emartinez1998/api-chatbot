@@ -795,3 +795,29 @@ def setDato(request):
         return Response({'error': 'El parámetro "dato" es requerido'}, status=400)
 
     return Response({'dato': dato}, status=200)
+
+
+
+## -----------------------------   *. OBTIENE LOS HORARIOS DE UN LUGAR  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getSchedules(request):
+    place = request.query_params.get('place', None)
+
+    if not place:
+        return Response({'error': 'El parámetro "place" es requerido'}, status=400)
+
+    default_schedules = {
+        "place": place,
+        "regularSchedules": [
+            {"weekday": 0, "openingTime": "08:00", "closingTime": "21:00"},
+            {"weekday": 1, "openingTime": "08:00", "closingTime": "21:00"},
+            {"weekday": 2, "openingTime": "08:00", "closingTime": "21:00"},
+            {"weekday": 3, "openingTime": "08:00", "closingTime": "21:00"},
+            {"weekday": 4, "openingTime": "08:00", "closingTime": "21:00"},
+            {"weekday": 5, "openingTime": "09:00", "closingTime": "15:00"},
+            {"weekday": 6, "openingTime": None, "closingTime": None}
+        ]
+    }
+
+    return Response(default_schedules, status=200)
