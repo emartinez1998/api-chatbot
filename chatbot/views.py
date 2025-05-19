@@ -517,11 +517,9 @@ def getDaysGuide(request):
 
 
 
-## -----------------------------   *. OBTENER LOS LUGARES DE UN DIA POR ID  -------------------------------------------
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getPlacesByDay(request):
-    
     guideDay = request.query_params.get('guideDay', None)
 
     if not guideDay:
@@ -531,20 +529,52 @@ def getPlacesByDay(request):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
     }
 
     try:
         external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
 
-        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
-        return Response(
-            data=external_response.json(),
-            status=external_response.status_code
-        )
+        if not isinstance(data, list):
+            return Response({'error': 'Formato de datos no válido'}, status=500)
+
+        count = len(data)
+
+        # Generar objetos dummy si faltan para llegar a 20
+        if count < 20:
+            for i in range(20 - count):
+                dummy = {
+                    "id": 0,
+                    "placeData": {
+                        "id": 0,
+                        "name": None,
+                        "translations": {
+                            "es": {
+                                "description": None,
+                                "descriptionKaneMigration": None,
+                                "address": None,
+                                "shortDescription": None
+                            }
+                        }
+                    },
+                    "createdAt": None,
+                    "updatedAt": None,
+                    "orderInDay": None,
+                    "isLiked": None,
+                    "feedback": None,
+                    "isVisited": False,
+                    "isActive": False,
+                    "description": None,
+                    "phase": None,
+                    "guideDay": int(guideDay) if guideDay.isdigit() else None,
+                    "place": 0
+                }
+                data.append(dummy)
+
+        return Response(data[:20], status=external_response.status_code)
 
     except requests.RequestException as e:
-        # En caso de que no haya respuesta (timeout, red, etc.)
         return Response({
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
