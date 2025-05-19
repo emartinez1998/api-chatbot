@@ -617,10 +617,20 @@ def getRecommendedPlaces(request):
 
 
 ## -----------------------------   *. OBTENER INFORMACION DE UN LUGAR POR SU ID  -------------------------------------------
+def replace_null_strings(obj):
+    if isinstance(obj, dict):
+        return {
+            k: replace_null_strings(v) for k, v in obj.items()
+        }
+    elif isinstance(obj, list):
+        return [replace_null_strings(item) for item in obj]
+    elif obj is None:
+        return "none"
+    return obj
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getPlaceById(request):
-    
     id = request.query_params.get('id', None)
 
     if not id:
@@ -630,20 +640,19 @@ def getPlaceById(request):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
     }
 
     try:
         external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
 
-        # Devuelve tal cual lo que devuelve el endpoint externo (cuerpo y status)
-        return Response(
-            data=external_response.json(),
-            status=external_response.status_code
-        )
+        # Reemplaza todos los None por 'none' en campos string
+        data_with_defaults = replace_null_strings(data)
+
+        return Response(data_with_defaults, status=external_response.status_code)
 
     except requests.RequestException as e:
-        # En caso de que no haya respuesta (timeout, red, etc.)
         return Response({
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
