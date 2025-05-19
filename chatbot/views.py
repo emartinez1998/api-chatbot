@@ -548,7 +548,7 @@ def getPlacesByDay(request):
                     "id": 0,
                     "placeData": {
                         "id": 0,
-                        "name": None,
+                        "name": "none",
                         "translations": {
                             "es": {
                                 "description": None,
