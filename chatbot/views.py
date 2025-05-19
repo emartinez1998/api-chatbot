@@ -816,7 +816,7 @@ def getSchedules(request):
             {"weekday": 3, "openingTime": "08:00", "closingTime": "21:00"},
             {"weekday": 4, "openingTime": "08:00", "closingTime": "21:00"},
             {"weekday": 5, "openingTime": "09:00", "closingTime": "15:00"},
-            {"weekday": 6, "openingTime": None, "closingTime": None}
+            {"weekday": 6, "openingTime": "Cerrado", "closingTime": "Cerrado"}
         ]
     }
 
