@@ -628,6 +628,7 @@ def replace_null_strings(obj):
         return "none"
     return obj
 
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getPlaceById(request):
@@ -761,13 +762,13 @@ def getSearchPlaceDay(request):
             best_match = None
             highest_ratio = 0.0
 
-            # 1. Buscar coincidencia por substring exacta (prioridad)
+            # 1. Buscar coincidencia exacta
             for item in data:
                 place_name = item.get("placeData", {}).get("name", "").strip().lower()
                 if name in place_name:
                     return Response(item, status=200)
 
-            # 2. Si no hay coincidencia directa, usar similitud
+            # 2. Buscar coincidencia razonable por similitud
             for item in data:
                 place_name = item.get("placeData", {}).get("name", "").strip().lower()
                 ratio = SequenceMatcher(None, name, place_name).ratio()
@@ -778,10 +779,23 @@ def getSearchPlaceDay(request):
             if best_match and highest_ratio > 0.3:
                 return Response(best_match, status=200)
             else:
-                return Response(
-                    {'error': f'No se encontró ninguna coincidencia razonable para el nombre "{name}"'},
-                    status=404
-                )
+                # Devolver objeto por defecto
+                default_place = {
+                    "id": 0,
+                    "guideDay": 0,
+                    "order": 0,
+                    "isActive": False,
+                    "place": 0,
+                    "placeData": {
+                        "id": 0,
+                        "name": "none",
+                        "address": "none",
+                        "description": "none",
+                        "latitude": "none",
+                        "longitude": "none"
+                    }
+                }
+                return Response(default_place, status=202)
 
         return Response(data, status=external_response.status_code)
 
