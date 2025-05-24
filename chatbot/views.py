@@ -403,7 +403,7 @@ def getUserByEmail(request):
     if not email:
         return Response({'error': 'El parámetro "email" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/users/clients/find-by-email/{email}/"
+    external_url = f"https://backend.liiffe.com/api/users/clients/find-by-email/{email}/"
 
     headers = {
         "Content-Type": "application/json"        
@@ -437,11 +437,11 @@ def getGuideById(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guides/{id}/"
+    external_url = f"https://backend.liiffe.com/api/products/guides/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"      
     }
 
     try:
@@ -471,11 +471,11 @@ def getDaysGuide(request):
     if not guide:
         return Response({'error': 'El parámetro "guide" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-days/?guide={guide}"
+    external_url = f"https://backend.liiffe.com/api/products/guide-days/?guide={guide}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     try:
@@ -525,11 +525,11 @@ def getPlacesByDay(request):
     if not guideDay:
         return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+    external_url = f"https://backend.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     try:
@@ -591,11 +591,11 @@ def getRecommendedPlaces(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/backup-places/"
+    external_url = f"https://backend.liiffe.com/api/products/guide-day-pois/{id}/backup-places/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"      
     }
 
     try:
@@ -637,11 +637,11 @@ def getPlaceById(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/destinations/places/{id}/"
+    external_url = f"https://backend.liiffe.com/api/destinations/places/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     try:
@@ -672,11 +672,11 @@ def updateGuide(request):
     if not id or not place:
         return Response({'error': 'Los parámetros "id" y "place" son requeridos'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/"
+    external_url = f"https://backend.liiffe.com/api/products/guide-day-pois/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     payload = {
@@ -711,11 +711,11 @@ def getDataPlaces(request):
 
     # Construir la URL con múltiples ids
     params = '&'.join([f'id={i}' for i in ids])
-    external_url = f"https://back-staging.liiffe.com/api/destinations/places/?{params}"
+    external_url = f"https://backend.liiffe.com/api/destinations/places/?{params}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     try:
@@ -746,11 +746,11 @@ def getSearchPlaceDay(request):
     if not guideDay:
         return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+    external_url = f"https://backend.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
     }
 
     try:
@@ -844,3 +844,73 @@ def getSchedules(request):
     }
 
     return Response(default_schedules, status=200)
+
+
+
+
+
+
+## -----------------------------   *. OBTIENE LOS DATOS DE UNA ORDEN POR SU ID  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request):
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://backend.liiffe.com/api/orders/orders/{id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
+
+        # Reemplaza todos los None por 'none' en campos string
+        data_with_defaults = replace_null_strings(data)
+
+        return Response(data_with_defaults, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+    
+    
+    
+## -----------------------------   *. OBTIENE EL PRODUCTO O GUIA ASOCIADO A UNA ORDEN  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getProductByOrder(request):
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://backend.liiffe.com/api/orders/cart-products/?cart={id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
+    }
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
+
+        # Reemplaza todos los None por 'none' en campos string
+        data_with_defaults = replace_null_strings(data)
+
+        return Response(data_with_defaults, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+        
