@@ -892,7 +892,7 @@ def getProductByOrder(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://backend.liiffe.com/api/orders/cart-products/?cart={2}"
+    external_url = f"https://backend.liiffe.com/api/orders/cart-products/?cart={id}"
 
     headers = {
         "Content-Type": "application/json",
