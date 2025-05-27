@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     'api-chatbot-liiffe.up.railway.app',
     'localhost',
     '127.0.0.1'
+    '35.180.213.196',
 ]
 
 
