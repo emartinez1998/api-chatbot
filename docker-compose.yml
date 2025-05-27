@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/api-chatbot
-      - sqlite3:/api-chatbot/db.sqlite3  # Volumen solo para la base de datos
+      - sqlite3:/api-chatbot/db  # Volumen solo para la base de datos
     command: sh -c "
       python manage.py migrate &&
       python manage.py collectstatic --noinput &&
