@@ -8,9 +8,24 @@ services:
     volumes:
       - .:/api-chatbot
       - ./db.sqlite3:/api-chatbot/db.sqlite3  # Volumen solo para la base de datos
+      - static_volume:/api-chatbot/staticfiles
     command: sh -c "
       python manage.py migrate &&
       python manage.py collectstatic --noinput &&
       exec gunicorn api_chatbot.wsgi:application --workers 2 --timeout 300 --bind 0.0.0.0:8000"
     env_file:
       - .env
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/staticfiles
+      # - /etc/letsencrypt/live/backend.liiffe.com/:/etc/letsencrypt/live/backend.liiffe.com/:ro
+      # - /etc/letsencrypt/archive/backend.liiffe.com/:/etc/letsencrypt/archive/backend.liiffe.com/:ro
+    ports:
+      - "80:80"
+      - "443:443"
