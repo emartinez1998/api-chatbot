@@ -1,0 +1,19 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/api-chatbot
+      - sqlite3:/api-chatbot/db.sqlite3  # Volumen solo para la base de datos
+    command: sh -c "
+      python manage.py migrate &&
+      python manage.py collectstatic --noinput &&
+      exec gunicorn api_chatbot.wsgi:application --workers 2 --timeout 300 --bind 0.0.0.0:8000"
+    env_file:
+      - .env
+
+volumes:
+  sqlite3:

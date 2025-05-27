@@ -14,6 +14,10 @@ from pathlib import Path
 from decouple import config
 from datetime import timedelta
 
+ENVIRONMENT = config('ENVIRONMENT')
+LIIFFE_BASE_URL = config('LIIFFE_BASE_URL')
+LIIFFE_API_KEY = config('LIIFFE_API_KEY')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q)69exi2v=7=2l&+7g3by)t7w)da90j88k&k6(t%8a@y&f)ymv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+if ENVIRONMENT == 'local':
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     'api-chatbot-liiffe.up.railway.app',

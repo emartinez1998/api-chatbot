@@ -8,6 +8,10 @@ from django.core.exceptions import ValidationError
 import time
 import json
 from difflib import SequenceMatcher
+from django.conf import settings
+
+LIIFFE_BASE_URL = settings.LIIFFE_BASE_URL
+LIIFFE_API_KEY = settings.LIIFFE_API_KEY
 
 
 @api_view(['GET'])
@@ -403,7 +407,7 @@ def getUserByEmail(request):
     if not email:
         return Response({'error': 'El parámetro "email" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/users/clients/find-by-email/{email}/"
+    external_url = f"{LIIFFE_BASE_URL}/users/clients/find-by-email/{email}/"
 
     headers = {
         "Content-Type": "application/json"        
@@ -437,11 +441,11 @@ def getGuideById(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guides/{id}/"
+    external_url = f"{LIIFFE_BASE_URL}/products/guides/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -471,11 +475,11 @@ def getDaysGuide(request):
     if not guide:
         return Response({'error': 'El parámetro "guide" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-days/?guide={guide}"
+    external_url = f"{LIIFFE_BASE_URL}/products/guide-days/?guide={guide}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -525,11 +529,11 @@ def getPlacesByDay(request):
     if not guideDay:
         return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+    external_url = f"{LIIFFE_BASE_URL}/products/guide-day-pois/?guideDay={guideDay}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -591,11 +595,11 @@ def getRecommendedPlaces(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/backup-places/"
+    external_url = f"{LIIFFE_BASE_URL}/products/guide-day-pois/{id}/backup-places/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"      
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -637,11 +641,11 @@ def getPlaceById(request):
     if not id:
         return Response({'error': 'El parámetro "id" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/destinations/places/{id}/"
+    external_url = f"{LIIFFE_BASE_URL}/destinations/places/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -672,11 +676,11 @@ def updateGuide(request):
     if not id or not place:
         return Response({'error': 'Los parámetros "id" y "place" son requeridos'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/{id}/"
+    external_url = f"{LIIFFE_BASE_URL}/products/guide-day-pois/{id}/"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     payload = {
@@ -711,11 +715,11 @@ def getDataPlaces(request):
 
     # Construir la URL con múltiples ids
     params = '&'.join([f'id={i}' for i in ids])
-    external_url = f"https://back-staging.liiffe.com/api/destinations/places/?{params}"
+    external_url = f"{LIIFFE_BASE_URL}/destinations/places/?{params}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
@@ -746,11 +750,11 @@ def getSearchPlaceDay(request):
     if not guideDay:
         return Response({'error': 'El parámetro "guideDay" es requerido'}, status=400)
 
-    external_url = f"https://back-staging.liiffe.com/api/products/guide-day-pois/?guideDay={guideDay}"
+    external_url = f"{LIIFFE_BASE_URL}/products/guide-day-pois/?guideDay={guideDay}"
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "api-key s34Qs8vN.APOQ13YTmpyRSLGmIVVsgiTjxuAO8eAf"
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
