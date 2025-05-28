@@ -71,7 +71,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://app.tidio.com",
-    "https://www.tidio.com",    
+    "https://www.tidio.com",
+    "https://bridgechat.liiffe.com",
 ]
 
 ROOT_URLCONF = 'api_chatbot.urls'
