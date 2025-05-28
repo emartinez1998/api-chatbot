@@ -75,6 +75,10 @@ CORS_ALLOWED_ORIGINS = [
     "https://bridgechat.liiffe.com",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://bridgechat.liiffe.com",
+]
+
 ROOT_URLCONF = 'api_chatbot.urls'
 
 TEMPLATES = [
