@@ -154,8 +154,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),       # Token de acceso válido por 30 días
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),      # Token de refresco válido por 30 días
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),       # Token de acceso válido por 30 días
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365),      # Token de refresco válido por 30 días
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
