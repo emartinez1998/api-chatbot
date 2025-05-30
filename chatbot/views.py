@@ -821,7 +821,7 @@ def setDato(request):
 
 
 
-## -----------------------------   *. OBTIENE LOS HORARIOS DE UN LUGAR  -------------------------------------------
+## -----------------------------   *. OBTIENE DATOS DE HORARISO DE UN LUGAR  -------------------------------------------
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getSchedules(request):
@@ -830,20 +830,66 @@ def getSchedules(request):
     if not place:
         return Response({'error': 'El parámetro "place" es requerido'}, status=400)
 
+    # Objeto por defecto con valores 'Desconocido / Unknown'
     default_schedules = {
         "place": place,
         "regularSchedules": [
-            {"weekday": 0, "openingTime": "08:00", "closingTime": "21:00"},
-            {"weekday": 1, "openingTime": "08:00", "closingTime": "21:00"},
-            {"weekday": 2, "openingTime": "08:00", "closingTime": "21:00"},
-            {"weekday": 3, "openingTime": "08:00", "closingTime": "21:00"},
-            {"weekday": 4, "openingTime": "08:00", "closingTime": "21:00"},
-            {"weekday": 5, "openingTime": "09:00", "closingTime": "15:00"},
-            {"weekday": 6, "openingTime": "Cerrado", "closingTime": "Cerrado"}
+            {"weekday": 0, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 1, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 2, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 3, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 4, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 5, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+            {"weekday": 6, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"}
         ]
     }
 
-    return Response(default_schedules, status=200)
+    external_url = f"https://backend.liiffe.com/api/destinations/regular-schedules/?place={place}"
+
+    try:
+        response = requests.get(external_url)
+        if response.status_code != 200:
+            return Response(default_schedules, status=200)
+
+        data = response.json()
+
+        # Validar si faltan datos o el formato está incompleto
+        if not data or 'place' not in data or 'regularSchedules' not in data:
+            return Response(default_schedules, status=200)
+
+        # Revisar campos en cada horario
+        processed_schedules = []
+        for schedule in data.get('regularSchedules', []):
+            weekday = schedule.get('weekday', None)
+            openingTime = schedule.get('openingTime', 'Desconocido / Unknown')
+            closingTime = schedule.get('closingTime', 'Desconocido / Unknown')
+
+            # Si weekday no es válido, se reemplaza con 0
+            weekday = weekday if isinstance(weekday, int) else 0
+            openingTime = openingTime if openingTime else 'Desconocido / Unknown'
+            closingTime = closingTime if closingTime else 'Desconocido / Unknown'
+
+            processed_schedules.append({
+                'weekday': weekday,
+                'openingTime': openingTime,
+                'closingTime': closingTime
+            })
+
+        # Si no hay horarios, también devuelve por defecto
+        if not processed_schedules:
+            return Response(default_schedules, status=200)
+
+        # Construir objeto final
+        final_schedules = {
+            "place": data.get('place', place),
+            "regularSchedules": processed_schedules
+        }
+
+        return Response(final_schedules, status=200)
+
+    except requests.RequestException:
+        # Si falla la solicitud externa, devolver el objeto por defecto
+        return Response(default_schedules, status=200)
 
 
 
@@ -913,4 +959,50 @@ def getProductByOrder(request):
             'error': 'Error al consultar el endpoint externo',
             'detalle': str(e)
         }, status=500)
-        
+
+
+
+
+
+## -----------------------------   *. OBTIENE DATOS COMO MOVERSE EN LA CIUDAD  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getTransportDescriptions(request):
+    city = request.query_params.get('city')  # Por defecto, se usa city=27 si no se proporciona
+    
+    external_url = f"https://backend.liiffe.com/api/destinations/transport-descriptions/?city={city}"
+
+    try:
+        response = requests.get(external_url)
+        if response.status_code != 200:
+            data = []  # Si el código no es 200, usamos una lista vacía
+        else:
+            data = response.json()
+    except requests.RequestException:
+        data = []  # En caso de error en la solicitud, lista vacía
+
+    # Generar datos por defecto para completar hasta 8 elementos
+    default_item = {
+        "id": 0,
+        "translations": {
+            "en": {
+                "title": "none",
+                "description": "none"
+            },
+            "es": {
+                "title": "none",
+                "description": "none"
+            }
+        },
+        "transportType": "none",
+        "city": int(city)  # Convertir a entero por seguridad
+    }
+
+    # Completamos hasta tener 8 elementos
+    while len(data) < 8:
+        data.append(default_item)
+
+    # Si hay más de 8 elementos, cortamos la lista (esto puede omitirse si deseas siempre todos)
+    data = data[:8]
+
+    return Response(data, status=200)
