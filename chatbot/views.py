@@ -968,20 +968,24 @@ def getProductByOrder(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getTransportDescriptions(request):
-    city = request.query_params.get('city')  # Por defecto, se usa city=27 si no se proporciona
-    
+    city = request.query_params.get('city')  # Por defecto city=27 si no se proporciona
+
     external_url = f"https://backend.liiffe.com/api/destinations/transport-descriptions/?city={city}"
 
     try:
         response = requests.get(external_url)
         if response.status_code != 200:
-            data = []  # Si el código no es 200, usamos una lista vacía
+            data = []
         else:
-            data = response.json()
+            data = response.json() or []
     except requests.RequestException:
-        data = []  # En caso de error en la solicitud, lista vacía
+        data = []
 
-    # Generar datos por defecto para completar hasta 8 elementos
+    # Aseguramos que 'data' es una lista
+    if not isinstance(data, list):
+        data = []
+
+    # Generar objeto por defecto
     default_item = {
         "id": 0,
         "translations": {
@@ -995,14 +999,11 @@ def getTransportDescriptions(request):
             }
         },
         "transportType": "none",
-        "city": int(city)  # Convertir a entero por seguridad
+        "city": int(city)
     }
 
-    # Completamos hasta tener 8 elementos
-    while len(data) < 8:
-        data.append(default_item)
-
-    # Si hay más de 8 elementos, cortamos la lista (esto puede omitirse si deseas siempre todos)
-    data = data[:8]
+    # Calcular el número de objetos por defecto a añadir
+    missing_count = max(0, 8 - len(data))
+    data.extend([default_item] * missing_count)
 
     return Response(data, status=200)
