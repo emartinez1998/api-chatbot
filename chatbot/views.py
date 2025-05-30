@@ -968,42 +968,59 @@ def getProductByOrder(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getTransportDescriptions(request):
-    city = request.query_params.get('city')  # Por defecto city=27 si no se proporciona
+    city = request.query_params.get('city', None)
+
+    if not city:
+        return Response({'error': 'El parámetro "city" es requerido'}, status=400)
 
     external_url = f"https://backend.liiffe.com/api/destinations/transport-descriptions/?city={city}"
 
     try:
-        response = requests.get(external_url)
-        if response.status_code != 200:
-            data = []
-        else:
-            data = response.json() or []
-    except requests.RequestException:
-        data = []
+        external_response = requests.get(external_url)
+        data = external_response.json()
 
-    # Aseguramos que 'data' es una lista
-    if not isinstance(data, list):
-        data = []
+        if external_response.status_code != 200 or not isinstance(data, list):
+            data = []  # Si hay error o la data no es lista, vaciamos
 
-    # Generar objeto por defecto
-    default_item = {
-        "id": 0,
-        "translations": {
-            "en": {
-                "title": "none",
-                "description": "none"
+        # Objeto por defecto para rellenar hasta 8 elementos
+        default_item = {
+            "id": 0,
+            "translations": {
+                "en": {
+                    "title": "none",
+                    "description": "none"
+                },
+                "es": {
+                    "title": "none",
+                    "description": "none"
+                }
             },
-            "es": {
-                "title": "none",
-                "description": "none"
-            }
-        },
-        "transportType": "none",
-        "city": int(city)
-    }
+            "transportType": "none",
+            "city": int(city)
+        }
 
-    # Calcular el número de objetos por defecto a añadir
-    missing_count = max(0, 8 - len(data))
-    data.extend([default_item] * missing_count)
+        # Calcular cuántos objetos por defecto faltan
+        missing_count = max(0, 8 - len(data))
+        data.extend([default_item] * missing_count)
 
-    return Response(data, status=200)
+        return Response(data, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        # En caso de fallo en la solicitud externa
+        default_items = [{
+            "id": 0,
+            "translations": {
+                "en": {
+                    "title": "none",
+                    "description": "none"
+                },
+                "es": {
+                    "title": "none",
+                    "description": "none"
+                }
+            },
+            "transportType": "none",
+            "city": int(city) if city else 0
+        }] * 8  # Si falla, devuelve 8 elementos por defecto
+
+        return Response(default_items, status=500)
