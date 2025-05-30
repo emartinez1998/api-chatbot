@@ -974,9 +974,15 @@ def getTransportDescriptions(request):
         return Response({'error': 'El parámetro "city" es requerido'}, status=400)
 
     external_url = f"https://backend.liiffe.com/api/destinations/transport-descriptions/?city={city}"
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "api-key PVYlS65Q.vF5gAFZrA2aR2hBnngKr2QIBowD8xcdf"
+    }
 
     try:
-        external_response = requests.get(external_url)
+        # CORREGIDO: ahora pasamos los headers en la solicitud
+        external_response = requests.get(external_url, headers=headers)
         data = external_response.json()
 
         if external_response.status_code != 200 or not isinstance(data, list):
@@ -1007,20 +1013,5 @@ def getTransportDescriptions(request):
 
     except requests.RequestException as e:
         # En caso de fallo en la solicitud externa
-        default_items = [{
-            "id": 0,
-            "translations": {
-                "en": {
-                    "title": "none",
-                    "description": "none"
-                },
-                "es": {
-                    "title": "none",
-                    "description": "none"
-                }
-            },
-            "transportType": "none",
-            "city": int(city) if city else 0
-        }] * 8  # Si falla, devuelve 8 elementos por defecto
-
+        default_items = [default_item] * 8  # Si falla, devuelve 8 elementos por defecto
         return Response(default_items, status=500)
