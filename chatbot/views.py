@@ -1006,12 +1006,12 @@ def getTransportDescriptions(request):
         }
 
         # Calcular cuántos objetos por defecto faltan
-        missing_count = max(0, 8 - len(data))
+        missing_count = max(0, 18 - len(data))
         data.extend([default_item] * missing_count)
 
         return Response(data, status=external_response.status_code)
 
     except requests.RequestException as e:
         # En caso de fallo en la solicitud externa
-        default_items = [default_item] * 8  # Si falla, devuelve 8 elementos por defecto
+        default_items = [default_item] * 18  # Si falla, devuelve 8 elementos por defecto
         return Response(default_items, status=500)
