@@ -835,68 +835,59 @@ def getSchedules(request):
         return Response({'error': 'El parámetro "place" es requerido'}, status=400)
 
     external_url = f"https://backend.liiffe.com/api/destinations/regular-schedules/?place={place}"
+
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"api-key {LIIFFE_API_KEY}"  # Asegúrate de definir esta variable como en la primera función
-    }
-
-    # Objeto por defecto con valores 'Desconocido / Unknown'
-    default_schedules = {
-        "place": place,
-        "regularSchedules": [
-            {"weekday": 0, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 1, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 2, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 3, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 4, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 5, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
-            {"weekday": 6, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"}
-        ]
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
     }
 
     try:
-        response = requests.get(external_url, headers=headers)
-        try:
-            data = response.json()
-        except ValueError:
-            data = {}
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
 
-        if response.status_code != 200 or not isinstance(data, dict):
-            data = {}
+        # Validar respuesta externa
+        if external_response.status_code != 200 or not data or 'place' not in data or 'regularSchedules' not in data:
+            # Objeto por defecto con valores 'Desconocido / Unknown'
+            default_schedules = {
+                "place": place,
+                "regularSchedules": [
+                    {"weekday": 0, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 1, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 2, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 3, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 4, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 5, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"},
+                    {"weekday": 6, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"}
+                ]
+            }
+            return Response(default_schedules, status=200)
 
-        # Validar si faltan datos o el formato está incompleto
-        place_id = data.get('place', place)
-        schedules = data.get('regularSchedules', [])
-
-        # Procesar y validar cada horario
+        # Procesar horarios reemplazando None por valores por defecto
         processed_schedules = []
-        for schedule in schedules:
-            weekday = schedule.get('weekday', 0)
-            openingTime = schedule.get('openingTime') or "Desconocido / Unknown"
-            closingTime = schedule.get('closingTime') or "Desconocido / Unknown"
-
-            if not isinstance(weekday, int):
-                weekday = 0
-
+        for schedule in data.get('regularSchedules', []):
             processed_schedules.append({
-                "weekday": weekday,
-                "openingTime": openingTime,
-                "closingTime": closingTime
+                'weekday': schedule.get('weekday', 0) if isinstance(schedule.get('weekday'), int) else 0,
+                'openingTime': schedule.get('openingTime') or 'Desconocido / Unknown',
+                'closingTime': schedule.get('closingTime') or 'Desconocido / Unknown'
             })
 
-        # Si no hay horarios válidos, usar el objeto por defecto
-        if not processed_schedules:
-            final_schedules = default_schedules
-        else:
-            final_schedules = {
-                "place": place_id,
-                "regularSchedules": processed_schedules
-            }
+        final_schedules = {
+            "place": data.get('place', place),
+            "regularSchedules": processed_schedules if processed_schedules else [
+                {"weekday": d, "openingTime": "Desconocido / Unknown", "closingTime": "Desconocido / Unknown"} for d in range(7)
+            ]
+        }
 
-        return Response(final_schedules, status=response.status_code)
+        # Reemplaza todos los None por 'none' en campos string del resultado final
+        final_schedules_with_defaults = replace_null_strings(final_schedules)
 
-    except requests.RequestException:
-        return Response(default_schedules, status=502)
+        return Response(final_schedules_with_defaults, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
 
 
 
@@ -981,3 +972,76 @@ def sendEmailTicket(request):
         # En caso de error, registrar y devolver respuesta exitosa (según requerimiento)
         print(f"Error al enviar correo: {e}")
         return Response({'message': 'Ticket enviado (con error en el envío real).'}, status=200)
+    
+
+
+
+
+
+## -----------------------------   *. OBTIENE LOS DATOS DE UNA ORDEN POR SU ID  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request):
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://backend.liiffe.com/api/orders/orders/{id}/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
+    }
+
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
+
+        # Reemplaza todos los None por 'none' en campos string
+        data_with_defaults = replace_null_strings(data)
+
+        return Response(data_with_defaults, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
+    
+
+
+
+
+## -----------------------------   *. OBTIENE EL PRODUCTO O GUIA ASOCIADO A UNA ORDEN  -------------------------------------------
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getProductByOrder(request):
+    id = request.query_params.get('id', None)
+
+    if not id:
+        return Response({'error': 'El parámetro "id" es requerido'}, status=400)
+
+    external_url = f"https://backend.liiffe.com/api/orders/cart-products/?cart={id}"
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"api-key {LIIFFE_API_KEY}"
+    }
+
+
+    try:
+        external_response = requests.get(external_url, headers=headers)
+        data = external_response.json()
+
+        # Reemplaza todos los None por 'none' en campos string
+        data_with_defaults = replace_null_strings(data)
+
+        return Response(data_with_defaults, status=external_response.status_code)
+
+    except requests.RequestException as e:
+        return Response({
+            'error': 'Error al consultar el endpoint externo',
+            'detalle': str(e)
+        }, status=500)
